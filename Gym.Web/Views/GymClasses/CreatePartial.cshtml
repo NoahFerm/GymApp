@@ -7,7 +7,10 @@
               data-ajax="true"
               data-ajax-method="POST"
               data-ajax-update="#gymclasses"
-              data-ajax-mode="replace">
+              data-ajax-mode="replace"
+              data-ajax-success="removeForm"
+              data-ajax-failure="fail"
+        >
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
