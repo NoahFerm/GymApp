@@ -11,6 +11,7 @@ function removeForm() {
     createForm.innerHTML = "";
 }
 
-function fail() {
-    console.log('Model error: check your input');
+function fail(response) {
+    console.log(response, 'Model error: check your input');
+    createForm.innerHTML = response.responseText;
 }
