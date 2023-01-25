@@ -10,16 +10,22 @@ using Gym.Web.Data;
 using Gym.Data.Data;
 using Gym.Web.Models;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Gym.Web.Extensions;
 
 namespace Gym.Web.Controllers
 {
     public class GymClassesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> userManager;
 
-        public GymClassesController(ApplicationDbContext context)
+        public GymClassesController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            this.userManager = userManager;
         }
 
         // GET: GymClasses
@@ -28,6 +34,41 @@ namespace Gym.Web.Controllers
             //var model = await _context.GymClasses.IgnoreQueryFilters().ToListAsync();
             var model = await _context.GymClasses.ToListAsync();
             return View(model);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> BookingToggle(int? id)
+        {
+            if (id is null) return BadRequest();
+
+            //var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = userManager.GetUserId(User);
+
+            if (userId == null) return NotFound();
+
+            //var currentGymClass = await _context.GymClasses.Include(g => g.AttendingMembers).FirstOrDefaultAsync(g => g.Id == id);
+
+            //var attending = currentGymClass?.AttendingMembers.FirstOrDefault(a => a.ApplicationUserId == userId);
+
+            var attending = await _context.ApplicationUserGymClass.FindAsync(userId, id);
+
+            if(attending == null)
+            {
+                var booking = new ApplicationUserGymClass
+                {
+                    ApplicationUserId = userId,
+                    GymClassId = (int)id
+                };
+
+                _context.ApplicationUserGymClass.Add(booking);
+            }
+            else
+            {
+                _context.ApplicationUserGymClass.Remove(attending);
+            }
+
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
         }
 
         // GET: GymClasses/Details/5
@@ -51,7 +92,7 @@ namespace Gym.Web.Controllers
         // GET: GymClasses/Create
         public IActionResult Create()
         {
-            return View();
+            return Request.IsAjax() ? PartialView("CreatePartial") : View();
         }
 
         // POST: GymClasses/Create
