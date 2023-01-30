@@ -16,7 +16,6 @@ namespace Gym.Web.MiddleWare
 
         public Task Invoke(HttpContext httpContext)
         {
-
             return _next(httpContext);
         }
     }
