@@ -2,6 +2,7 @@ using Gym.Core.Entities;
 using Gym.Data.Data;
 using Gym.Web.Data;
 using Gym.Web.Extensions;
+using Gym.Web.MiddleWare;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -57,6 +58,7 @@ namespace Gym.Web
             app.UseStaticFiles();
 
             app.UseRouting();
+            //app.UseMiddleware();
 
             app.UseAuthorization();
 

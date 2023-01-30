@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Gym.Web.Extensions;
+using Gym.Web.Filters;
 
 namespace Gym.Web.Controllers
 {
@@ -72,21 +73,11 @@ namespace Gym.Web.Controllers
         }
 
         // GET: GymClasses/Details/5
+        [RequiredParameterRequiredModel("id")]
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.GymClasses == null)
-            {
-                return NotFound();
-            }
-
-            var gymClass = await _context.GymClasses
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (gymClass == null)
-            {
-                return NotFound();
-            }
-
-            return View(gymClass);
+            return View(await _context.GymClasses
+                .FirstOrDefaultAsync(m => m.Id == id));
         }
 
         // GET: GymClasses/Create
