@@ -3,7 +3,10 @@ using Gym.Data.Data;
 using Gym.Web.Data;
 using Gym.Web.Extensions;
 using Gym.Web.MiddleWare;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 
 namespace Gym.Web
@@ -35,8 +38,25 @@ namespace Gym.Web
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews(options =>
             {
+                //  options.Filters.Add<AuthorizeFilter>();
+                var policy = new AuthorizationPolicyBuilder()
+                                  .RequireAuthenticatedUser()
+                                  .RequireRole("Member")
+                                  .Build();
+
+                options.Filters.Add(new AuthorizeFilter(policy));
+
                 options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(_ => "The field is required");
             });
+
+            //builder.Services.AddAuthorization(opt =>
+            //{
+            //    opt.AddPolicy("Test", policy =>
+            //    {
+            //        policy.RequireRole("Admin");
+            //        policy.RequireClaim("Test");
+            //    });
+            //});
 
             var app = builder.Build();
 

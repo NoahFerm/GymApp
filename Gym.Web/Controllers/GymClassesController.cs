@@ -18,6 +18,7 @@ using Gym.Web.Filters;
 
 namespace Gym.Web.Controllers
 {
+    [Authorize(Policy = "Test")]
     public class GymClassesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -37,7 +38,7 @@ namespace Gym.Web.Controllers
             return View(model);
         }
 
-        [Authorize]
+        //[Authorize]
         public async Task<IActionResult> BookingToggle(int? id)
         {
             if (id is null) return BadRequest();
