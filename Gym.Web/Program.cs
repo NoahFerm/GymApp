@@ -1,6 +1,7 @@
 using Gym.Core.Entities;
 using Gym.Data.Data;
 using Gym.Web.Data;
+using Gym.Web.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,7 +9,7 @@ namespace Gym.Web
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,7 @@ namespace Gym.Web
                 options.Password.RequireDigit = false;
                 options.Password.RequiredLength = 3;
             })
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddControllersWithViews(options =>
             {
@@ -36,6 +38,8 @@ namespace Gym.Web
             });
 
             var app = builder.Build();
+
+            await app.SeedDataAsync();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

@@ -16,11 +16,21 @@ namespace Gym.Data.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            //builder.Entity<ApplicationUser>().Property<DateTime>("TimeOfRegistration");
             base.OnModelCreating(builder);
 
             builder.Entity<ApplicationUserGymClass>().HasKey(a => new { a.ApplicationUserId, a.GymClassId });
         
             builder.Entity<GymClass>().HasQueryFilter(g => g.StartTime > DateTime.UtcNow);
         }
+
+        //public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        //{
+        //    foreach (var entry in ChangeTracker.Entries<ApplicationUser>().Where(e => e.State == EntityState.Added))
+        //    {
+        //        entry.Property("TimeOfRegistration").CurrentValue = DateTime.Now;
+        //    }
+        //    return base.SaveChangesAsync(cancellationToken);
+        //}
     }
 }
