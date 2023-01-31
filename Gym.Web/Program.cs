@@ -1,5 +1,6 @@
 using Gym.Core.Entities;
 using Gym.Core.Repositories;
+using Gym.Data;
 using Gym.Data.Data;
 using Gym.Data.Repositories;
 using Gym.Web.Data;
@@ -61,6 +62,7 @@ namespace Gym.Web
             //        policy.RequireClaim("Test");
             //    });
             //});
+            builder.Services.AddAutoMapper(typeof(MapperProfile));
 
             var app = builder.Build();
 

@@ -18,6 +18,7 @@ using Gym.Web.Filters;
 using Gym.Data.Repositories;
 using Gym.Core.Repositories;
 using Gym.Core.ViewModels;
+using AutoMapper;
 
 namespace Gym.Web.Controllers
 {
@@ -29,33 +30,39 @@ namespace Gym.Web.Controllers
 
         //private readonly GymClassRepository gymClassRepository;
         private readonly UserManager<ApplicationUser> userManager;
-
-        public GymClassesController(IUnitOfWork uow, /*ApplicationDbContext context,*/ UserManager<ApplicationUser> userManager)
+        private readonly IMapper mapper;
+        public GymClassesController(IUnitOfWork uow, /*ApplicationDbContext context,*/ UserManager<ApplicationUser> userManager, IMapper mapper)
         {
             //  _context = context ?? throw new ArgumentNullException(nameof(context));
             //gymClassRepository = new GymClassRepository(context);
             this.uow = uow;
 
             this.userManager = userManager;
+            this.mapper = mapper;
         }
 
         // GET: GymClasses
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            //  List<GymClass> model = await uow.GymClassRepository.GetAsync();
+            //var gymClasses = await uow.GymClassRepository.GetAsync();
+            //var res = mapper.Map<IEnumerable<GymClassesViewModel>>(gymClasses);
             var userId = userManager.GetUserId(User);
-
-            var model = (await uow.GymClassRepository.GetWithAttendingAsync())
-                                                        .Select(g => new GymClassesViewModel
-                                                        {
-                                                            Id = g.Id,
-                                                            Name = g.Name,
-                                                            Duration = g.Duration,
-                                                            StartTime = g.StartTime,
-                                                            Attending = g.AttendingMembers.Any(a => a.ApplicationUserId == userId)
-                                                        }).ToList();
-            return View(model);
+            var gymClasses = await uow.GymClassRepository.GetWithAttendingAsync();
+            var res = mapper.Map<IEnumerable<GymClassesViewModel>>(gymClasses, opt => opt.Items.Add("UserId", userId));
+            
+            //  List<GymClass> model = await uow.GymClassRepository.GetAsync();
+          
+            //var model = (await uow.GymClassRepository.GetWithAttendingAsync())
+            //                                            .Select(g => new GymClassesViewModel
+            //                                            {
+            //                                                Id = g.Id,
+            //                                                Name = g.Name,
+            //                                                Duration = g.Duration,
+            //                                                StartTime = g.StartTime,
+            //                                                Attending = g.AttendingMembers.Any(a => a.ApplicationUserId == userId)
+            //                                            }).ToList();
+            return View(res);
         }
 
 
