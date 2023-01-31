@@ -1,5 +1,6 @@
 using Gym.Core.Entities;
 using Gym.Data.Data;
+using Gym.Data.Repositories;
 using Gym.Web.Data;
 using Gym.Web.Extensions;
 using Gym.Web.MiddleWare;
@@ -24,6 +25,8 @@ namespace Gym.Web
                 options.UseSqlServer(connectionString));
             
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             builder.Services.AddDefaultIdentity<ApplicationUser>(options => 
             {
