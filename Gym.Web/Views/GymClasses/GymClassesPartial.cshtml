@@ -6,7 +6,7 @@
         <td>
             @if (User.IsInRole("Member"))
             {
-                <a asp-action="Details" asp-route-id="@item.Id">@item.Name</a> <span>|</span>
+                <a asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
             }
             else
             {
