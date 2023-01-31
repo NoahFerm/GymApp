@@ -1,4 +1,5 @@
-﻿using Gym.Data.Data;
+﻿using Gym.Core.Repositories;
+using Gym.Data.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -16,6 +16,8 @@ using Microsoft.AspNetCore.Authorization;
 using Gym.Web.Extensions;
 using Gym.Web.Filters;
 using Gym.Data.Repositories;
+using Gym.Core.Repositories;
+using Gym.Core.ViewModels;
 
 namespace Gym.Web.Controllers
 {
@@ -41,7 +43,18 @@ namespace Gym.Web.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
-            List<GymClass> model = await uow.GymClassRepository.GetAsync();
+            //  List<GymClass> model = await uow.GymClassRepository.GetAsync();
+            var userId = userManager.GetUserId(User);
+
+            var model = (await uow.GymClassRepository.GetWithAttendingAsync())
+                                                        .Select(g => new GymClassesViewModel
+                                                        {
+                                                            Id = g.Id,
+                                                            Name = g.Name,
+                                                            Duration = g.Duration,
+                                                            StartTime = g.StartTime,
+                                                            Attending = g.AttendingMembers.Any(a => a.ApplicationUserId == userId)
+                                                        }).ToList();
             return View(model);
         }
 

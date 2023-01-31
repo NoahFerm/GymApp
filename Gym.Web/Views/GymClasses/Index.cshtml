@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Gym.Core.Entities.GymClass>
+﻿@model IEnumerable<GymClassesViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -40,9 +40,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Duration)
             </th>
-            <th>
+            @*<th>
                 @Html.DisplayNameFor(model => model.Description)
-            </th>
+            </th>*@
             <th></th>
         </tr>
     </thead>

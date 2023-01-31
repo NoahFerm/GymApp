@@ -1,4 +1,5 @@
 using Gym.Core.Entities;
+using Gym.Core.Repositories;
 using Gym.Data.Data;
 using Gym.Data.Repositories;
 using Gym.Web.Data;

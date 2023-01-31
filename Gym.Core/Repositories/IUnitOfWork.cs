@@ -1,4 +1,4 @@
-﻿namespace Gym.Data.Repositories
+﻿namespace Gym.Core.Repositories
 {
     public interface IUnitOfWork
     {
