@@ -2,7 +2,8 @@
 
 @foreach (var item in Model)
 {
-    <tr>
+    <partial name="GymClassPartial" model="@item" />
+    @*<tr>
         <td>
             @if (User.IsInRole("Member"))
             {
@@ -22,7 +23,7 @@
         @*<td>
             @Html.DisplayFor(modelItem => item.Description)
         </td>*@
-        @if (User.IsInRole("Member"))
+        @*@if (User.IsInRole("Member"))
         {
             <td>
                     
@@ -35,5 +36,5 @@
                 <a asp-action="BookingToggle" asp-route-id="@item.Id" class="btn @(item.Attending ? "btn-danger" : "btn-success")">@(item.Attending ? "Cancel" : "Book")</a>
             </td>
         }
-    </tr>
+    </tr>*@
 }

@@ -1,39 +1,38 @@
-﻿@model Gym.Core.Entities.GymClass
+﻿@model GymClassesViewModel
 
 <tr>
     <td>
         @if (User.IsInRole("Member"))
         {
-            <a asp-action="Details" asp-route-id="@Model.Id">@Model.Id</a> <span>|</span>
+            <a asp-action="Details" asp-route-id="@Model.Id">@Model.Name</a>
         }
         else
         {
-            @Html.DisplayFor(item => item.Name)
+            @Html.DisplayFor(modelItem => modelItem.Name)
         }
-        
     </td>
     <td>
-        @Html.DisplayFor(item => item.StartTime)
+        @Html.DisplayFor(modelItem => modelItem.StartTime)
     </td>
     <td>
-        @Html.DisplayFor(item => item.Duration)
+        @Html.DisplayFor(modelItem => modelItem.Duration)
     </td>
-    <td>
-        @Html.DisplayFor(item => item.Description)
-    </td>
-    @{
-        if (User.IsInRole("Member"))
-        {
-            <td>
-                
+    @*<td>
+    @Html.DisplayFor(modelItem => item.Description)
+    </td>*@
+    @if (User.IsInRole("Member"))
+    {
+        <td>
 
-                if (User.IsInRole("Admin"))
-                {
+
+            @if (User.IsInRole("Admin"))
+            {
                 <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> <span>|</span>
-                <a asp-action="Delete" asp-route-id="@Model.Id">Delete</a><span>|</span>
-                }
-                <a asp-action="BookingToggle" asp-route-id="@Model.Id">Book</a>
-            </td>
-        }
+                <a asp-action="Delete" asp-route-id="@Model.Id">Delete</a>
+
+                <span>|</span>
+            }
+            <a asp-action="BookingToggle" asp-route-id="@Model.Id" class="btn @(Model.Attending ? "btn-danger" : "btn-success")">@(Model.Attending ? "Cancel" : "Book")</a>
+        </td>
     }
 </tr>
