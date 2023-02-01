@@ -34,5 +34,14 @@ namespace Gym.Data.Repositories
         {
             db.Add(gymClass);
         }
+
+        public async Task<IEnumerable<GymClass>> GetHistoryAsync()
+        {
+            return await db.GymClasses
+                .Include(g => g.AttendingMembers)
+                .IgnoreQueryFilters()
+                .Where(g => g.StartTime < DateTime.Now)
+                .ToListAsync();
+        }
     }
 }

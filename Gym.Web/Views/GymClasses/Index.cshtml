@@ -26,7 +26,18 @@
         </div>
         
     }
-    
+@if (User.IsInRole("Member"))
+{
+    <form asp-action="Index">
+        <div class="form-check">
+            <input class="form-check-inout" type="checkbox" asp-for="ShowHistory" id="flexCheckDefault" />
+            <label class="form-check-label" for="checkbox">
+                Show History
+            </label>
+        </div>
+    </form>
+}  
+
 
 <table class="table">
     <thead>

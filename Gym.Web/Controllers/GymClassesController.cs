@@ -25,33 +25,44 @@ namespace Gym.Web.Controllers
     //[Authorize(Policy = "Test")]
     public class GymClassesController : Controller
     {
-        //private readonly ApplicationDbContext _context;
         private readonly IUnitOfWork uow;
-
-        //private readonly GymClassRepository gymClassRepository;
         private readonly UserManager<ApplicationUser> userManager;
         private readonly IMapper mapper;
-        public GymClassesController(IUnitOfWork uow, /*ApplicationDbContext context,*/ UserManager<ApplicationUser> userManager, IMapper mapper)
-        {
-            //  _context = context ?? throw new ArgumentNullException(nameof(context));
-            //gymClassRepository = new GymClassRepository(context);
-            this.uow = uow;
 
+        //private readonly ApplicationDbContext _context;
+        //private readonly GymClassRepository gymClassRepository;
+        
+        public GymClassesController(IUnitOfWork uow, UserManager<ApplicationUser> userManager, IMapper mapper /*, ApplicationDbContext context*/)
+        {
+            this.uow = uow;
             this.userManager = userManager;
             this.mapper = mapper;
+
+            //  _context = context ?? throw new ArgumentNullException(nameof(context));
+            //gymClassRepository = new GymClassRepository(context);
         }
 
         // GET: GymClasses
         [AllowAnonymous]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(IndexViewModel viewModel)
         {
+            if (User.Identity != null && !User.Identity.IsAuthenticated)
+                return View(mapper.Map<IndexViewModel>(await uow.GymClassRepository.GetAsync()));
+            var gymClasses = viewModel.ShowHistory ?
+                await uow.GymClassRepository.GetHistoryAsync()
+                : await uow.GymClassRepository.GetWithAttendingAsync();
+            
+            var res = mapper.Map<IndexViewModel>(gymClasses);
+
+            return View(res);
+
+
             //var gymClasses = await uow.GymClassRepository.GetAsync();
             //var res = mapper.Map<IEnumerable<GymClassesViewModel>>(gymClasses);
             //var userId = userManager.GetUserId(User);
             //var gymClasses = await uow.GymClassRepository.GetWithAttendingAsync();
             //var res = mapper.Map<IEnumerable<GymClassesViewModel>>(gymClasses, opt => opt.Items.Add("UserId", userId));
-            var gymClasses = await uow.GymClassRepository.GetWithAttendingAsync();
-            var res = mapper.Map<IndexViewModel>(gymClasses);
+
 
             //var m = new IndexViewModel
             //{
@@ -77,7 +88,6 @@ namespace Gym.Web.Controllers
             //                                                StartTime = g.StartTime,
             //                                                Attending = g.AttendingMembers.Any(a => a.ApplicationUserId == userId)
             //                                            }).ToList();
-            return View(res);
         }
 
 
@@ -85,10 +95,11 @@ namespace Gym.Web.Controllers
         public async Task<IActionResult> BookingToggle(int? id)
         {
             if (id is null) return BadRequest();
-
-            //var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            
             var userId = userManager.GetUserId(User);
-
+            
+            //var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            
             if (userId == null) return NotFound();
             ApplicationUserGymClass? attending = await uow.ApplicationUserGymClassRepository.FindAsync(userId, (int)id);
 
@@ -99,16 +110,17 @@ namespace Gym.Web.Controllers
                     ApplicationUserId = userId,
                     GymClassId = (int)id
                 };
-
-                // _context.ApplicationUserGymClass.Add(booking);
+                
                 uow.ApplicationUserGymClassRepository.Add(booking);
+                
+                // _context.ApplicationUserGymClass.Add(booking);
             }
             else
             {
-                // _context.ApplicationUserGymClass.Remove(attending);
                 uow.ApplicationUserGymClassRepository.Remove(attending);
+                
+                // _context.ApplicationUserGymClass.Remove(attending);
             }
-
             await uow.CompleteAsync();      // _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
@@ -118,6 +130,7 @@ namespace Gym.Web.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             return View(await uow.GymClassRepository.GetAsync((int)id!)); 
+            
             //return View(await _context.GymClasses
             //    .FirstOrDefaultAsync(m => m.Id == id));
         }
@@ -142,11 +155,15 @@ namespace Gym.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                //  _context.Add(gymClass);
-                //  await _context.SaveChangesAsync();
                 uow.GymClassRepository.Add(gymClass);
                 await uow.CompleteAsync();
+
                 return Request.IsAjax() ? PartialView("GymClassPartial", mapper.Map<GymClassesViewModel>(gymClass)) : RedirectToAction(nameof(Index));
+
+                //  _context.Add(gymClass);
+                //  await _context.SaveChangesAsync();
+
+
             }
             if (Request.IsAjax())
             {

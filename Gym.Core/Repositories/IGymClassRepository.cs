@@ -8,5 +8,6 @@ namespace Gym.Core.Repositories
         Task<IEnumerable<GymClass>> GetWithAttendingAsync();
         Task<GymClass?> GetAsync(int id);
         void Add(GymClass gymClass);
+        Task<IEnumerable<GymClass>> GetHistoryAsync();
     }
 }

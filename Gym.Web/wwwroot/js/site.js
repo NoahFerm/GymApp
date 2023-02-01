@@ -44,3 +44,7 @@ async function fetchCreateForm2() {
     createForm.innerHTML = data;
     fixValidation();
 }
+
+$('#checkbox').click(function () {
+    $('form').submit();
+})
