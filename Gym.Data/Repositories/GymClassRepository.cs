@@ -44,4 +44,49 @@ namespace Gym.Data.Repositories
                 .ToListAsync();
         }
     }
+    public class MockRepo : IGymClassRepository
+    {
+        private ApplicationDbContext db;
+
+        public MockRepo(ApplicationDbContext db)
+        {
+            this.db = db;
+        }
+
+        public void Add(GymClass gymClass)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<List<GymClass>> GetAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<GymClass?> GetAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<GymClass>> GetHistoryAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<GymClass>> GetWithAttendingAsync()
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class MockUoW : IUnitOfWork
+    {
+        public IGymClassRepository GymClassRepository => throw new NotImplementedException();
+
+        public IApplicationUserGymClassRepository ApplicationUserGymClassRepository => throw new NotImplementedException();
+
+        public Task CompleteAsync()
+        {
+            throw new NotImplementedException();
+        }
+    }
 }
