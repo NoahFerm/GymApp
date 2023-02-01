@@ -1,4 +1,4 @@
-﻿@model IEnumerable<GymClassesViewModel>
+﻿@model IndexViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -32,13 +32,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.GymClasses.First().Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.StartTime)
+                @Html.DisplayNameFor(model => model.GymClasses.First().StartTime)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Duration)
+                @Html.DisplayNameFor(model => model.GymClasses.First().Duration)
             </th>
             @*<th>
                 @Html.DisplayNameFor(model => model.Description)
@@ -47,6 +47,6 @@
         </tr>
     </thead>
     <tbody id="gymclasses">
-        <partial name="GymClassesPartial" />
+        <partial name="GymClassesPartial" model="@Model.GymClasses" />
     </tbody>
 </table>

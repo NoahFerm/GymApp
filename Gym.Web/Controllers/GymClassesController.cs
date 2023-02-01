@@ -47,12 +47,27 @@ namespace Gym.Web.Controllers
         {
             //var gymClasses = await uow.GymClassRepository.GetAsync();
             //var res = mapper.Map<IEnumerable<GymClassesViewModel>>(gymClasses);
-            var userId = userManager.GetUserId(User);
+            //var userId = userManager.GetUserId(User);
+            //var gymClasses = await uow.GymClassRepository.GetWithAttendingAsync();
+            //var res = mapper.Map<IEnumerable<GymClassesViewModel>>(gymClasses, opt => opt.Items.Add("UserId", userId));
             var gymClasses = await uow.GymClassRepository.GetWithAttendingAsync();
-            var res = mapper.Map<IEnumerable<GymClassesViewModel>>(gymClasses, opt => opt.Items.Add("UserId", userId));
-            
+            var res = mapper.Map<IndexViewModel>(gymClasses);
+
+            //var m = new IndexViewModel
+            //{
+            //    GymClasses = (await uow.GymClassRepository.GetWithAttendingAsync())
+            //                                            .Select(g => new GymClassesViewModel
+            //                                            {
+            //                                                Id = g.Id,
+            //                                                Name = g.Name,
+            //                                                Duration = g.Duration,
+            //                                                StartTime = g.StartTime,
+            //                                                Attending = g.AttendingMembers.Any(a => a.ApplicationUserId == userId)
+            //                                            }).ToList()
+            //};
+
             //  List<GymClass> model = await uow.GymClassRepository.GetAsync();
-          
+
             //var model = (await uow.GymClassRepository.GetWithAttendingAsync())
             //                                            .Select(g => new GymClassesViewModel
             //                                            {
